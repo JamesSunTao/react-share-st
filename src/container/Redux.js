@@ -27,7 +27,13 @@ class Redux extends React.Component{
     storeChange=()=>{
         this.setState(store.getState())
     }
-
+    deleteItem=(index)=>{
+        let action = {
+            type:'delItem',  
+            index:index                 
+        }
+        store.dispatch(action);
+    }
     render(){
         return (
             <Card title="Redux页面">
@@ -45,7 +51,13 @@ class Redux extends React.Component{
                     <List
                         bordered
                         dataSource={this.state.list}
-                        renderItem={item=>(<List.Item>{item}</List.Item>)}
+                        
+                        renderItem={(item,index)=>(<List.Item
+                            actions={[<a key="list-loadmore-edit" onClick = {this.deleteItem.bind(index)}>delete</a>]}>
+                            
+                               {item}
+                            
+                              </List.Item>)}
                     />    
                 </div>
                 </div>
