@@ -1,8 +1,8 @@
 import React from 'react'
-import {Card ,Input ,Button ,List} from 'antd'
 import store from '../store'
-
-
+import {changeValueAction,addItemAction ,deleteItemAction,getTodoList} from '../store/actions'
+import ReactUI from '../components/ReduxUi'
+// import axios from 'axios'
 
 class Redux extends React.Component{
     constructor(props){
@@ -11,57 +11,42 @@ class Redux extends React.Component{
         this.state = store.getState();
         store.subscribe(this.storeChange) //订阅Redux的状态
     }
+
+    componentDidMount(){
+        // axios.get('https://www.easy-mock.com/mock/5cfcce489dc7c36bd6da2c99/xiaojiejie/getList').then((res)=>{    
+        //     const data = res.data
+        //     const action = getListAction(data)
+        //     store.dispatch(action)
+        // })
+        const action = getTodoList()
+        store.dispatch(action)
+    }
+
+
     changeItem = (e) =>{
-       let action = {
-           type:'changeValue',  
-           value:e.target.value         
-       }
+       const action = changeValueAction(e.target.value)
        store.dispatch(action);
     }
     addItem = () =>{
-        let action = {
-            type:'addItem',                   
-        }
+        const action = addItemAction()
         store.dispatch(action);
     }
     storeChange=()=>{
         this.setState(store.getState())
     }
     deleteItem=(index)=>{
-        let action = {
-            type:'delItem',  
-            index:index                 
-        }
+        const action = deleteItemAction(index)
         store.dispatch(action);
     }
     render(){
         return (
-            <Card title="Redux页面">
-                <div style={{margin:'10px'}}>
-                    <div>
-                        <Input placeholder={this.state.inputValue} 
-                        value = {this.state.inputValue}
-                        style={{ width:'250px', marginRight:'10px'}} 
-                        onChange = {this.changeItem}
-                        
-                        />
-                        <Button type="primary" onClick={this.addItem}>增加</Button>
-                    </div>
-                    <div style={{margin:'10px',width:'300px'}}>
-                    <List
-                        bordered
-                        dataSource={this.state.list}
-                        
-                        renderItem={(item,index)=>(<List.Item
-                            actions={[<a key="list-loadmore-edit" onClick = {this.deleteItem.bind(index)}>delete</a>]}>
-                            
-                               {item}
-                            
-                              </List.Item>)}
-                    />    
-                </div>
-                </div>
-            </Card>
+            <ReactUI
+                inputValue={this.state.inputValue}
+                list={this.state.list}
+                changeItem={this.changeItem}
+                addItem={this.addItem}
+                deleteItem={this.deleteItem}
+            /> 
         )
     }
 }
